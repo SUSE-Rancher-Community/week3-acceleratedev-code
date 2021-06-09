@@ -1,0 +1,13 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: noop
+spec:
+  steps:
+    - name: noop
+      image: ubuntu
+      command:
+        - echo
+      args:
+        - "This task doesn't really do anything but that's cool!"
+        

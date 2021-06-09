@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: github-pr-pipeline
+spec:
+  resources:
+    - name: source
+      type: git
+  tasks:
+    - name: pytest
+      taskRef:
+        name: pytest
+      resources:
+        inputs:
+          - name: source
+            resource: source
