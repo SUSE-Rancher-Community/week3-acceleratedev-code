@@ -3,7 +3,7 @@ kind: EventListener
 metadata:
   name: github-pr
 spec:
-  serviceAccountName: tekton-triggers-sa
+  serviceAccountName: tekton-triggers-example-sa
   triggers:
     - name: github-listener
       interceptors:
