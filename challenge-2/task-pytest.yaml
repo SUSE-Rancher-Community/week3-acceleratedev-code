@@ -8,6 +8,11 @@ spec:
       - name: source
         type: git
   steps:
+    - name: install-requirements
+      image: python:3
+      workingDir: /workspace/source
+      command: ["pip3"]
+      args: ["install -r requirements.txt"]
     - name: run-pytest
       image: python:3
       workingDir: /workspace/source
