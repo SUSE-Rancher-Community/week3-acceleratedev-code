@@ -1,0 +1,41 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: github-pr-pipeline-template
+spec:
+  params:
+    - name: gitrevision
+      description: The git revision (SHA)
+    - name: gitrepositoryurl
+      description: The git repository url ("https://github.com/foo/bar.git")
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: github-pr-pipeline-run-
+      spec:
+        pipelineRef:
+          name: github-pr-pipeline
+        workspaces:
+        - name: shared-data
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+              - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 500Mi
+        - name: dockerconfig
+        secret: 
+          secretName: dockercreds
+        params:
+        - name: repo-url
+          value: $(tt.params.gitrepositoryurl)
+        - name: commit-id
+          value: $(tt.params.gitrevision) 
+        - name: image-name
+          value: timirnich/shoppinglist-redis
+        - name: path-to-image-context
+          value: /workspace/source/.
+        - name: path-to-dockerfile
+          value: /workspace/source/Dockerfile
