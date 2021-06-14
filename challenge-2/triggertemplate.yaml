@@ -16,13 +16,17 @@ spec:
       spec:
         pipelineRef:
           name: github-pr-pipeline
-        resources:
-          - name: source
-            resourceSpec:
-              type: git
-              params:
-                - name: revision
-                  value: $(tt.params.gitrevision)
-                - name: url
-                  value: $(tt.params.gitrepositoryurl)
-                  
+        workspaces:
+        - name: shared-data
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+              - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 500Mi
+        params:
+        - name: repo-url
+          value: $(tt.params.gitrepositoryurl)
+        - name: commit-id
+          value: $(tt.params.gitrevision) 

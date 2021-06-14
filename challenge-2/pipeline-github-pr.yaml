@@ -3,14 +3,23 @@ kind: Pipeline
 metadata:
   name: github-pr-pipeline
 spec:
-  resources:
-    - name: source
-      type: git
+  params:
+  - name: repo-url
+    type: string
+  - name: commit-id
+    type: string
+  workspaces:
+  - name: shared-data
+    description: This is where the cloned repo will be put
   tasks:
-    - name: pytest
-      taskRef:
-        name: pytest
-      resources:
-        inputs:
-          - name: source
-            resource: source
+    - name: clone-repo
+      taskRef: 
+        name: git-clone
+      workspaces:
+      - name: output
+        workspace: shared-data
+      params:
+      - name: url
+        value: $(params.repo-url)
+      - name: revision
+        value: $(params.commit-id)
