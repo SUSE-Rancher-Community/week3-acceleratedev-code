@@ -5,7 +5,7 @@ metadata:
 spec:
   steps:
     - name: noop
-      image: ubuntu
+      image: opensuse/leap
       command:
         - echo
       args:
