@@ -24,4 +24,4 @@ spec:
       bindings:
         - ref: github-pr-binding
       template:
-        ref: github-pr-pipeline-template
+        ref: clone-build-deploy-pipeline-template
