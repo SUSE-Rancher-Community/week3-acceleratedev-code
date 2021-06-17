@@ -1,0 +1,67 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: clone-build-deploy-pipeline
+spec:
+  params:
+  - name: repo-url
+    type: string
+  - name: commit-id
+    type: string
+  - name: image-name
+    type: string
+  - name: path-to-image-context
+    type: string
+    default: .
+  - name: path-to-dockerfile
+    type: string
+    default: /workspace/source/Dockerfile
+  - name: path-to-manifests
+    type: string
+    default: k8s
+  - name: target-namespace
+    type: string
+    default: default
+  workspaces:
+  - name: repository-ws
+    description: This is where the cloned repo will be put
+  tasks:
+    - name: clone-repo
+      taskRef: 
+        name: git-clone
+      workspaces:
+      - name: output
+        workspace: repository-ws
+      params:
+      - name: url
+        value: $(params.repo-url)
+      - name: revision
+        value: $(params.commit-id)
+    - name: build-image
+      taskRef:
+        name: kaniko
+      runAfter: 
+        - clone-repo
+      workspaces:
+      - name: source
+        workspace: repository-ws
+      params:
+      - name: IMAGE
+        value: $(params.image-name)
+      - name: CONTEXT
+        value: $(params.path-to-image-context)
+      - name: DOCKERFILE
+        value: $(params.path-to-dockerfile)
+    - name: deploy
+      taskRef: 
+        name: apply-manifests
+      runAfter:
+        - build-image
+      workspaces:
+        - name: source
+          workspace: repository-ws
+      params:
+      - name: manifest_dir
+        value: $(params.path-to-manifests)
+      - name: namespace
+        value: $(params.target-namespace)

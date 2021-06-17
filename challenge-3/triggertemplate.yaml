@@ -25,17 +25,8 @@ spec:
               resources:
                 requests:
                   storage: 500Mi
-        - name: dockerconfig
-        secret: 
-          secretName: dockercreds
         params:
         - name: repo-url
           value: $(tt.params.gitrepositoryurl)
         - name: commit-id
           value: $(tt.params.gitrevision) 
-        - name: image-name
-          value: timirnich/shoppinglist-redis
-        - name: path-to-image-context
-          value: /workspace/source/.
-        - name: path-to-dockerfile
-          value: /workspace/source/Dockerfile
