@@ -1,0 +1,28 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: clone-build-deploy-pipeline-run-
+spec:
+  pipelineRef:
+    name: clone-build-deploy-pipeline
+  serviceAccountName: build-bot
+  workspaces:
+  - name: repository-ws
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 500Mi
+  params:
+  - name: repo-url
+    value: https://github.com/timirnich/example-flask-redis.git
+  - name: commit-id
+    value: fc87634e61fc074683f84ed53c95b3a9e61d70ad 
+  - name: image-name
+    value: timirnich/shoppinglist-redis:latest
+  - name: path-to-image-context
+    value: .
+  - name: path-to-dockerfile
+    value: /workspace/source/Dockerfile
